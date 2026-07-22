@@ -278,20 +278,24 @@ curl http://localhost:8000/health
 
 ## 12. AI Usage Disclosure
 
-Claude (Anthropic) was used to scaffold this project's structure, code,
-and documentation. All AI-generated code was manually reviewed for
-correctness and adherence to the stated requirements, and was tested
-(syntax-checked and, where feasible, executed directly — e.g. the
-logging module was run standalone to confirm console/file output).
-Some AI suggestions were modified during review — for example, adjusting
-the Docker Compose volume filename to match the SQLite path actually
-produced by `database.py`, and choosing to keep `image_processor.py`
-free of database access so duplicate-hash lookups live in `worker.py`
-instead.
+Claude (Anthropic) was used to scaffold this project's structure, code, and documentation. All AI-generated code was manually reviewed for correctness and adherence to the stated requirements, and was tested (syntax-checked and, where feasible, executed directly — e.g. the logging module was run standalone to confirm console/file output). Some AI suggestions were modified during review — for example, adjusting the Docker Compose volume filename to match the SQLite path actually produced by database.py, and choosing to keep image_processor.py free of database access so duplicate-hash lookups live in worker.py instead.
+
+## 13. Assumptions
+
+The implementation is based on the following assumptions:
+
+- Uploaded files are valid image formats (JPEG, JPG, or PNG) and are within the configured upload size limit.
+- Vehicle number validation verifies only the format using regular expressions and does not check against any official government vehicle registration database.
+- Duplicate detection uses perceptual image hashing (pHash), which identifies visually similar images but may not detect every possible duplicate.
+- Screenshot and tampering detection are heuristic-based techniques intended to indicate potential issues rather than provide definitive forensic evidence.
+- OCR accuracy depends on the quality, orientation, lighting conditions, and readability of the uploaded image.
+- FastAPI BackgroundTasks are sufficient for the asynchronous processing requirements of this assignment. A dedicated task queue (such as Celery with Redis) would be more appropriate for large-scale production deployments.
+- SQLite is assumed to be sufficient for a single-instance application. A production deployment would typically use PostgreSQL or another client-server database for improved concurrency and scalability.
+
 
 ---
 
-## 13. Trade-Offs
+## 14. Trade-Offs
 
 | Choice | Instead of | Why |
 |---|---|---|
@@ -302,7 +306,7 @@ instead.
 
 ---
 
-## 14. Scalability Considerations
+## 15. Scalability Considerations
 
 - **Background tasks run in-process** — vertical scaling only; horizontal
   scaling (multiple app instances) would cause each instance's
@@ -319,7 +323,7 @@ instead.
 
 ---
 
-## 15. Failure Handling Strategy
+## 16. Failure Handling Strategy
 
 - **Upload-time validation** (content-type, size, empty file) rejects bad
   input before any DB row or background task is created.
@@ -339,7 +343,7 @@ instead.
 
 ---
 
-## 16. Future Improvements
+## 17. Future Improvements
 
 - Replace `BackgroundTasks` with **Celery + Redis** for durable,
   horizontally-scalable task execution.
