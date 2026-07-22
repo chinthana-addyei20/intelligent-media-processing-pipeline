@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+venv/
+media_pipeline.db
+uploads/*
+!uploads/.gitkeep
+logs/*
+!logs/.gitkeep
+.DS_Store
+.env
