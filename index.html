@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Media Processing Pipeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 720px;
+            width: 100%;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .upload-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .file-input-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #fafafa;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-input-wrapper input[type="file"]:hover {
+            border-color: #4f46e5;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:disabled {
+            background: #a5a5a5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-processing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #374151;
+            min-width: 120px;
+        }
+
+        .info-value {
+            color: #1a1a2e;
+            word-break: break-all;
+            font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+            font-size: 13px;
+        }
+
+        .json-view {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .polling-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border: 1px solid #bae6fd;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #0369a1;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            color: #991b1b;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Intelligent Media Processing Pipeline</h1>
+            <p class="subtitle">
+                Upload an image for intelligent analysis including blur/brightness scoring,
+                OCR-based Indian vehicle number validation, duplicate detection, and
+                screenshot/tampering heuristics.
+            </p>
+
+            <div class="upload-area">
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                <button class="btn" id="uploadBtn" onclick="handleUpload()">Upload Image</button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card hidden" id="resultsCard">
+            <div class="section">
+                <div class="section-title">Processing Details</div>
+                <div class="info-row">
+                    <span class="info-label">Processing ID</span>
+                    <span class="info-value" id="processingId">—</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Status</span>
+                    <span id="statusContainer">
+                        <span class="status-badge status-pending" id="statusBadge">pending</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Polling indicator -->
+            <div class="polling-indicator hidden" id="pollingIndicator">
+                <span class="loader"></span>
+                <span>Monitoring processing status...</span>
+            </div>
+
+            <!-- Final Results -->
+            <div class="section hidden" id="finalResultsSection">
+                <div class="section-title">Analysis Results</div>
+                <pre class="json-view" id="resultsContent"></pre>
+            </div>
+
+            <!-- Failure Details -->
+            <div class="section hidden" id="failureSection">
+                <div class="section-title">Failure Details</div>
+                <div class="error-box" id="failureContent"></div>
+            </div>
+
+            <!-- Reset button -->
+            <div class="section hidden" id="resetSection">
+                <button class="btn btn-secondary" onclick="resetUI()">Upload Another Image</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pollingTimer = null;
+        let isPolling = false;
+
+        function handleUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select an image file first.');
+                return;
+            }
+
+            // Reset previous results
+            resetResults();
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.detail || 'Upload failed'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                const processingId = data.processing_id;
+                document.getElementById('processingId').textContent = processingId;
+
+                // Show results card
+                document.getElementById('resultsCard').classList.remove('hidden');
+
+                // Start polling
+                startPolling(processingId);
+            })
+            .catch(error => {
+                alert('Upload error: ' + error.message);
+            })
+            .finally(() => {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload Image';
+            });
+        }
+
+        function startPolling(processingId) {
+            if (isPolling) return;
+            isPolling = true;
+
+            const pollingIndicator = document.getElementById('pollingIndicator');
+            pollingIndicator.classList.remove('hidden');
+
+            function poll() {
+                fetch('/status/' + encodeURIComponent(processingId))
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw new Error(err.detail || 'Status check failed'); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const status = data.status || data.state || 'unknown';
+                        updateStatus(status);
+
+                        if (status === 'completed') {
+                            stopPolling();
+                            fetchResults(processingId);
+                        } else if (status === 'failed') {
+                            stopPolling();
+                            fetchFailure(processingId);
+                        } else {
+                            // Continue polling
+                            pollingTimer = setTimeout(poll, 2000);
+                        }
+                    })
+                    .catch(error => {
+                        stopPolling();
+                        document.getElementById('pollingIndicator').classList.add('hidden');
+                        alert('Status check error: ' + error.message);
+                    });
+            }
+
+            // First poll immediately
+            poll();
+        }
+
+        function stopPolling() {
+            isPolling = false;
+            if (pollingTimer) {
+                clearTimeout(pollingTimer);
+                pollingTimer = null;
+            }
+            document.getElementById('pollingIndicator').classList.add('hidden');
+        }
+
+        function updateStatus(status) {
+            const badge = document.getElementById('statusBadge');
+            const statusLower = status.toLowerCase();
+            badge.textContent = statusLower;
+
+            // Remove all status classes and add the appropriate one
+            badge.className = 'status-badge';
+            if (statusLower === 'pending') {
+                badge.classList.add('status-pending');
+            } else if (statusLower === 'processing' || statusLower === 'in_progress') {
+                badge.classList.add('status-processing');
+                badge.textContent = 'processing';
+            } else if (statusLower === 'completed') {
+                badge.classList.add('status-completed');
+            } else if (statusLower === 'failed') {
+                badge.classList.add('status-failed');
+            } else {
+                badge.classList.add('status-pending');
+            }
+        }
+
+        function fetchResults(processingId) {
+            fetch('/results/' + encodeURIComponent(processingId))
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.detail || 'Failed to fetch results'); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const section = document.getElementById('finalResultsSection');
+                    const content = document.getElementById('resultsContent');
+                    content.textContent = JSON.stringify(data, null, 2);
+                    section.classList.remove('hidden');
+                    document.getElementById('resetSection').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Results fetch error: ' + error.message);
+                    document.getElementById('resetSection').classList.remove('hidden');
+                });
+        }
+
+        function fetchFailure(processingId) {
+            fetch('/failure/' + encodeURIComponent(processingId))
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.detail || 'Failed to fetch failure details'); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const section = document.getElementById('failureSection');
+                    const content = document.getElementById('failureContent');
+                    content.textContent = JSON.stringify(data, null, 2);
+                    section.classList.remove('hidden');
+                    document.getElementById('resetSection').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Failure details fetch error: ' + error.message);
+                    document.getElementById('resetSection').classList.remove('hidden');
+                });
+        }
+
+        function resetResults() {
+            document.getElementById('processingId').textContent = '—';
+            updateStatus('pending');
+            document.getElementById('finalResultsSection').classList.add('hidden');
+            document.getElementById('failureSection').classList.add('hidden');
+            document.getElementById('resetSection').classList.add('hidden');
+            document.getElementById('resultsContent').textContent = '';
+            document.getElementById('failureContent').textContent = '';
+            stopPolling();
+        }
+
+        function resetUI() {
+            resetResults();
+            document.getElementById('resultsCard').classList.add('hidden');
+            document.getElementById('fileInput').value = '';
+        }
+    </script>
+</body>
+</html>
+

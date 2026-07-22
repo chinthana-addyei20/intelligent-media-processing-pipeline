@@ -19,6 +19,7 @@ from typing import AsyncIterator
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 # `models` must be imported before `init_db()` is called so that all
 # ORM classes are registered against `Base.metadata` — otherwise
@@ -78,9 +79,9 @@ app.include_router(router)
 
 
 @app.get("/", include_in_schema=False)
-def root() -> dict:
-    """Simple landing response pointing to interactive API docs."""
-    return {"message": "Intelligent Media Processing Pipeline is running. See /docs for API documentation."}
+def root() -> FileResponse:
+    """Serve the frontend landing page."""
+    return FileResponse(os.path.join(PROJECT_ROOT, "index.html"))
 
 
 if __name__ == "__main__":
