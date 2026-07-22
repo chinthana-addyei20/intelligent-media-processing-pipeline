@@ -355,3 +355,13 @@ The implementation is based on the following assumptions:
   from the API process.
 - Add **metrics and monitoring** (Prometheus/Grafana, structured request
   tracing) beyond the current file/console logging.
+
+
+
+  ##17 . Project Links
+
+  ## Project Links
+
+- GitHub Repository: https://github.com/chinthana-addyei20/intelligent-media-processing-pipeline
+- Live Deployment (Render): https://intelligent-media-processing-pipeline-xhd8.onrender.com
+- API Documentation: https://intelligent-media-processing-pipeline-xhd8.onrender.com/docs
