@@ -198,7 +198,7 @@ persists across `docker-compose down` / `up` cycles.
 **Upload**
 ```bash
 curl -X POST http://localhost:8000/upload \
-  -F "file=@sample_images/car.jpg"
+  -F "file=@sample_images/auto1.jpg"
 ```
 ```json
 {
@@ -228,7 +228,7 @@ curl http://localhost:8000/results/b3f1c2e4-9a7d-4e21-8b3a-6d2f1a9c0e12
 ```json
 {
   "processing_id": "b3f1c2e4-9a7d-4e21-8b3a-6d2f1a9c0e12",
-  "filename": "car.jpg",
+  "filename": "auto1.jpg",
   "status": "completed",
   "analysis": {
     "blur_score": 245.67,
@@ -253,9 +253,9 @@ curl http://localhost:8000/failure/b3f1c2e4-9a7d-4e21-8b3a-6d2f1a9c0e12
 ```json
 {
   "processing_id": "b3f1c2e4-9a7d-4e21-8b3a-6d2f1a9c0e12",
-  "filename": "corrupt.jpg",
+  "filename": "auto2.jpg",
   "status": "failed",
-  "failure_reason": "ImageProcessingError: Unable to read 'corrupt.jpg' as an image",
+  "failure_reason": "ImageProcessingError: Unable to read 'auto2.jpg' as an image",
   "retry_count": 1,
   "created_at": "2026-07-21T06:05:00Z",
   "updated_at": "2026-07-21T06:05:02Z"
