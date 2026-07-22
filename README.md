@@ -276,11 +276,7 @@ curl http://localhost:8000/health
 
 ---
 
-## 12. AI Usage Disclosure
-
-Claude (Anthropic) was used to scaffold this project's structure, code, and documentation. All AI-generated code was manually reviewed for correctness and adherence to the stated requirements, and was tested (syntax-checked and, where feasible, executed directly — e.g. the logging module was run standalone to confirm console/file output). Some AI suggestions were modified during review — for example, adjusting the Docker Compose volume filename to match the SQLite path actually produced by database.py, and choosing to keep image_processor.py free of database access so duplicate-hash lookups live in worker.py instead.
-
-## 13. Assumptions
+## 12. Assumptions
 
 The implementation is based on the following assumptions:
 
@@ -293,9 +289,11 @@ The implementation is based on the following assumptions:
 - SQLite is assumed to be sufficient for a single-instance application. A production deployment would typically use PostgreSQL or another client-server database for improved concurrency and scalability.
 
 
+
+
 ---
 
-## 14. Trade-Offs
+## 13. Trade-Offs
 
 | Choice | Instead of | Why |
 |---|---|---|
@@ -306,7 +304,7 @@ The implementation is based on the following assumptions:
 
 ---
 
-## 15. Scalability Considerations
+## 14. Scalability Considerations
 
 - **Background tasks run in-process** — vertical scaling only; horizontal
   scaling (multiple app instances) would cause each instance's
@@ -323,7 +321,7 @@ The implementation is based on the following assumptions:
 
 ---
 
-## 16. Failure Handling Strategy
+## 15. Failure Handling Strategy
 
 - **Upload-time validation** (content-type, size, empty file) rejects bad
   input before any DB row or background task is created.
@@ -343,7 +341,7 @@ The implementation is based on the following assumptions:
 
 ---
 
-## 17. Future Improvements
+## 16. Future Improvements
 
 - Replace `BackgroundTasks` with **Celery + Redis** for durable,
   horizontally-scalable task execution.
