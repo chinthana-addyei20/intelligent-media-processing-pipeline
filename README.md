@@ -363,5 +363,4 @@ The implementation is based on the following assumptions:
   ## Project Links
 
 - GitHub Repository: https://github.com/chinthana-addyei20/intelligent-media-processing-pipeline
-- Live Deployment (Render): https://intelligent-media-processing-pipeline-xhd8.onrender.com
-- API Documentation: https://intelligent-media-processing-pipeline-xhd8.onrender.com/docs
+
